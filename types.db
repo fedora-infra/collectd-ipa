@@ -1,0 +1,4 @@
+ipa_groups        value:GAUGE:0:U
+ipa_staged_users  value:GAUGE:0:U
+ipa_users         value:GAUGE:0:U
+ipa_users_rate    value:DERIVE:0:U

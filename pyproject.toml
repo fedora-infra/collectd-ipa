@@ -1,0 +1,85 @@
+[tool.poetry]
+name = "collectd-ipa"
+version = "1.0.0"
+description = "A CollectD plugin to get metrics from IPA"
+
+license = "LGPL-3.0-or-later"
+
+authors = [
+  "Fedora Infrastructure <infrastructure@lists.fedoraproject.org>"
+]
+
+readme = "README.md"
+
+repository = "https://github.com/fedora-infra/collectd-ipa"
+homepage = "https://github.com/fedora-infra/collectd-ipa"
+
+include = [
+  "Makefile",
+  "collectd.d/*",
+  "types.db",
+  "collection.conf",
+]
+
+keywords = ['monitoring']
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Intended Audience :: Developers",
+    "Topic :: Security",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[tool.poetry.dependencies]
+python = "^3.6.2"
+python-ldap = "^3.3.1"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^3.7.9"
+bandit = "^1.6.2"
+liccheck = "^0.4.2"
+black = "^21.6b0"
+isort = "^5.9.1"
+pre-commit = "^2.13.0"
+
+[tool.isort]
+profile = "black"
+lines_after_imports = 2
+force_alphabetical_sort_within_sections = true
+
+[tool.liccheck]
+authorized_licenses = [
+  "bsd",
+  "new bsd",
+  "simplified bsd",
+  "apache",
+  "apache 2.0",
+  "apache software",
+  "Apache License 2.0",
+  "gnu lgpl",
+  "gpl v2",
+  "GNU General Public License v2 or later (GPLv2+)",
+  "gpl v3",
+  "lgpl with exceptions or zpl",
+  "isc",
+  "isc license (iscl)",
+  "mit",
+  "python software foundation",
+  "zpl 2.1",
+  "mpl-2.0",
+  "MPL 2.0",
+  "lgpl",
+  "wtfpl",
+  "GNU GPLv3+",
+  "GNU General Public License v3 (GPLv3)",
+  "GNU Lesser General Public License v3 or later (LGPLv3+)",
+  "Apache License, Version 2.0",
+  "Public Domain <http://unlicense.org>",
+]
+
+[build-system]
+requires = ["poetry>=1.0.0"]
+build-backend = "poetry.masonry.api"
