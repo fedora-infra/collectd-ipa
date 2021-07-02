@@ -1,6 +1,7 @@
 import os
 import re
 from configparser import ConfigParser
+from tempfile import mkstemp
 
 import collectd
 import ldap
@@ -12,6 +13,7 @@ CONFIG = {
     "DomainPrefix": "ipa.",
     "IpaConf": "/etc/ipa/default.conf",
     "LdapConf": "/etc/openldap/ldap.conf",
+    "CredCacheDir": "/var/lib/collectd",
 }
 
 
@@ -37,6 +39,9 @@ class LDAPClient:
         self.conn = ldap.initialize(self.config["URI"].split(" ")[0])
         self.conn.protocol_version = 3
         self.conn.sasl_gssapi_bind_s(authz_id="")
+
+    def close(self):
+        self.conn.unbind_s()
 
     def search(self, base, filters, attrs):
         page_size = 1000
@@ -132,7 +137,17 @@ class Collector:
         return f"{prefix}{domain}"
 
     def setup(self):
+        self._prepare_kerberos()
         self.client.connect()
+
+    def _prepare_kerberos(self):
+        cc_dir = self.config["CredCacheDir"]
+        if not os.path.exists(cc_dir):
+            os.makedirs(cc_dir)
+        cc_fh, cc_path = mkstemp(prefix="ipa_", suffix=".krb5cc", dir=cc_dir)
+        os.close(cc_fh)
+        os.remove(cc_path)
+        os.environ["KRB5CCNAME"] = f"FILE:{cc_path}"
 
     def collect(self):
         # Groups
@@ -159,6 +174,12 @@ class Collector:
             value = [value]
         vl.dispatch(values=value)
 
+    def shutdown(self):
+        self.client.close()
+        # Remove the cred cache
+        cc = os.environ["KRB5CCNAME"].split(":")[1]
+        os.remove(cc)
+
 
 def configure(plugin_config):
     config = CONFIG.copy()
@@ -181,6 +202,7 @@ def configure(plugin_config):
     collector = Collector(config=config)
     collectd.register_init(collector.setup)
     collectd.register_read(collector.collect, int(config["Interval"]))
+    collectd.register_shutdown(collector.shutdown)
 
 
 collectd.register_config(configure)
