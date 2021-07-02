@@ -30,12 +30,8 @@ On the host where the collectd server is running:
 The `collectd.d/ipa.conf` file has an example of the available configuration
 values that you can adjust, in the `Module collectd_ipa` block.
 
-Note that if you change the collection interval, you'll have to recreate your
-RRD files.
-
-To accomodate clusters, all the metrics will be attached to a virtual host
-named after your domain in IPA. The `domain_prefix` value allows you to add a
-prefix to this domain.
+It contains descriptions of what the configuration variables mean and their
+default values.
 
 
 ## License
